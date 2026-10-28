@@ -1,0 +1,48 @@
+{
+  "name": "default-setup-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "depcruise": "depcruise --config dependency-cruiser.cjs --validate dependency-cruiser.cjs app",
+    "depcruise:graph": "depcruise --config dependency-cruiser.cjs --output-type dot app > dependencies.dot",
+    "depcruise:graph:svg": "pnpm run depcruise:graph && dot -Tsvg dependencies.dot -o dependencies.svg",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm depcruise",
+    "prepare": "husky",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:codegen": "playwright codegen http://localhost:3000"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/turbopack": "4",
+    "@types/node": "20",
+    "@types/react": "19",
+    "@types/react-dom": "19",
+    "dependency-cruiser": "18.7.0",
+    "eslint": "9",
+    "eslint-config-next": "16.4.3",
+    "eslint-config-prettier": "10.1.8",
+    "husky": "9.1.7",
+    "prettier": "3.9.10",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "tailwindcss": "4",
+    "typescript": "5",
+    "yv-type-utils": "1.0.4"
+  },
+  "packageManager": "pnpm@12.15.0",
+  "engines": {
+    "node": "24.x"
+  }
+}

@@ -1,0 +1,71 @@
+name: Default App
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    name: Check dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup project
+        uses: ./.github/actions/setup-project
+
+      - name: Run audit
+        run: pnpm audit --audit-level=high
+
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup project
+        uses: ./.github/actions/setup-project
+
+      - name: Run typecheck, lint, format and circular dependencies checks
+        run: pnpm run check
+
+  test:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup project
+        uses: ./.github/actions/setup-project
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm run test:e2e
+
+  build:
+    needs: [security, quality, test]
+    name: Production Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup project
+        uses: ./.github/actions/setup-project
+
+      - name: Build application
+        run: pnpm run build
